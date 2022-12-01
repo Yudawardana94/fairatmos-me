@@ -1,23 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import "./App.css";
+
+import { getDataAPI } from "./fetchData";
+
+// email to : idos@fairatmos.com
 
 function App() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = async () => {
+    try {
+      const apiData = await getDataAPI();
+      setData(apiData);
+    } catch (error) {
+      console.log(error);
+      setData([]);
+    }
+  };
+
+  const Card = ({ data }) => {
+    return (
+      <div className="" key={data[0]}>
+        <p>{data[0]}</p>
+        {data[1].map((el) => {
+          return <Content data={el} key={Math.random()} />;
+        })}
+      </div>
+    );
+  };
+
+  const Content = ({ data }) => {
+    return <p key={data.id}>name: {data.name}</p>;
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {data.map((cat) => {
+        return <Card data={cat} key={Math.random()} />;
+      })}
     </div>
   );
 }
